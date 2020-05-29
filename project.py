@@ -159,10 +159,11 @@ def DeCompressionAlgorithm():
     contents=contents[i+1:len(contents)]
     contents="\n".join(contents)
     contents=string_to_binary(contents)
-    print(CharDictionary)
-    print(contents)
-    '''Fatima's Function
-    '''
+    tree=TreeCreator(CharDictionary)
+    BinaryDictionary=BinaryDictionaryCreater(CharDictionary,tree)
+    
+
+
 Window=Tk()
 Window.geometry('360x240')
 Window.title("Welcome to File compression algorithm")
