@@ -74,6 +74,7 @@ def binToChr(msg):
     for x in binary:
         decimal, i =  0, 0
         x = int(x)
+        
         while x != 0:
             dec = x % 10
             decimal = decimal + dec * (2**i)
@@ -87,23 +88,47 @@ def binToChr(msg):
     #translating ascii to character; end
     return(char)
 def binary_converter(num):
-    result=""
-
-    if num>1:
-        binary_converter(num//2) 
-    result+= str(num%2)
+    result=[]
+    while num>1:
+        result.append(str(num%2))
+        num=num//2
+    result.append(str("1"))
+    result=result[::-1]
+    result="".join(result)
+    if len(result)<7:
+        result=("0"*(7-len(result)))+result
     return result
-
-
 def string_to_binary(txt):
     l= [ord(items) for items in txt]
     result=""
     for i in l:
         result+=binary_converter(i)
-
-
     return result
+def coded_are_keys(diction):
+    k=diction.keys()
+    result={}
+    for i in k:
+        result[diction[i]]=i
+    return result
+def coded_to_uncoded(diction,content):
+    result=''
+    count=0
+    code=''
+    while count< len(content):
+        found= False
+        code=content[count]
+        while found== False:
+            first=count
+            if code in diction.keys():
 
+                found=True
+                result+= diction[code]
+                count+=1
+            else:
+                
+                count+=1
+                code+=content[first+1:count+1]  
+    return result
 def CompressionAlgorithm():
     file_name=txt.get()
     file1=open(file_name,"r")
@@ -115,6 +140,7 @@ def CompressionAlgorithm():
     Binarylength=len(BinaryContent)
     if Binarylength%7!=0:
         BinaryContent+=("0"*(7-(Binarylength%7)))
+    print(BinaryContent)
     message=binToChr(BinaryContent)
     file1.close()
     file_name=file_name[0:len(file_name)-4]+"compressed"+file_name[len(file_name)-4:len(file_name)]
@@ -132,6 +158,7 @@ def CompressionAlgorithm():
     Window.title("Welcome to File compression algorithm")
     lbl = Label(Window, text="File Compression successful. Congrats",font=("Arial Bold", 15))
     lbl.grid(column=0, row=0)
+
 def DeCompressionAlgorithm():
     skip=False
     end=False
@@ -155,13 +182,24 @@ def DeCompressionAlgorithm():
             CharDictionary[contents[i-1]]=int(contents[i])
             skip=False
         i+=1
-    Binarylength=contents[i]
+    Binarylength=int(contents[i])
     contents=contents[i+1:len(contents)]
-    contents="\n".join(contents)
+    contents="".join(contents)
     contents=string_to_binary(contents)
+    contents=contents[0:Binarylength]
     tree=TreeCreator(CharDictionary)
     BinaryDictionary=BinaryDictionaryCreater(CharDictionary,tree)
-    
+    BinaryDictionary=coded_are_keys(BinaryDictionary)
+    print(BinaryDictionary)
+    message=coded_to_uncoded(BinaryDictionary,contents)
+    file2=open("DecompressedFile.txt","w")
+    file2.write(message)
+    file2.close()
+    Window=Tk()
+    Window.geometry('480x240')
+    Window.title("Welcome to File compression algorithm")
+    lbl = Label(Window, text="File DeCompression successful. Congrats",font=("Arial Bold", 15))
+    lbl.grid(column=0, row=0)
 
 
 Window=Tk()
